@@ -126,18 +126,34 @@
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Agrupamiento.h" />
+    <ClInclude Include="Celda.h" />
+    <ClInclude Include="Expresion.h" />
+    <ClInclude Include="KarnaughMap.h" />
+    <ClInclude Include="MyForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="TablaVerdad.h" />
+    <ClInclude Include="Variable.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Agrupamiento.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="Celda.cpp" />
     <ClCompile Include="Discretas.cpp" />
+    <ClCompile Include="Expresion.cpp" />
+    <ClCompile Include="KarnaughMap.cpp" />
+    <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TablaVerdad.cpp" />
+    <ClCompile Include="Variable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />
@@ -145,7 +161,14 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MyForm.resx">
+      <DependentUpon>MyForm.h</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
