@@ -1,10 +1,16 @@
 #include "pch.h"
-#include <iostream>
+#include "MyForm.h"
+
 using namespace System;
-using namespace std;
-int x;
-int main()
+using namespace System::Windows::Forms;
+
+[STAThreadAttribute]
+int main(array<System::String^>^ args)
 {
-    cout << "Hola";
+    Application::EnableVisualStyles();
+    Application::SetCompatibleTextRenderingDefault(false);
+    Discretas::MyForm form;
+    Application::Run(% form);
+
     return 0;
-} //pene
+}
