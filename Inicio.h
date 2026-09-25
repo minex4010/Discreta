@@ -89,7 +89,7 @@ namespace Discretas {
             int numVariables = comboBox1->SelectedIndex + 2;
             MyForm^ ventanaMapa = gcnew MyForm(numVariables);
 
-            this->Hide(); //PARA MOSTR
+            this->Hide(); //PARA MOSTRAR
             ventanaMapa->ShowDialog();
             this->Show();
         }
