@@ -1,5 +1,5 @@
 #pragma once
-#include "KarnaughMap.h" 
+#include "KarnaughMap.h" // Conecta con la lógica C++
 
 namespace Discretas {
 
@@ -13,26 +13,29 @@ namespace Discretas {
     public ref class MyForm : public System::Windows::Forms::Form
     {
     private:
-        // Controles de la Tabla de Verdad
+        int variablesSeleccionadas;
+
         GroupBox^ grpTabla;
         array<Label^>^ lblX;
         array<Label^>^ lblY;
         array<ComboBox^>^ cmbF;
 
-        // Controles del Mapa de Karnaugh
         GroupBox^ grpMapa;
         TextBox^ txtM00; TextBox^ txtM01;
         TextBox^ txtM10; TextBox^ txtM11;
-        Button^ btnCalcular;
 
-        // Botón general
+        Button^ btnCalcular;
         Button^ btnVolver;
 
     public:
-        MyForm(void)
+        // Constructor que recibe el número de variables
+        MyForm(int numVars)
         {
+            variablesSeleccionadas = numVars;
             InitializeComponent();
-            ConfigurarInterfaz();
+            ConfigurarInterfaz(); // Dibuja todo por código
+
+            this->Text = "Mapa de Karnaugh con " + variablesSeleccionadas + " variables";
         }
 
     protected:
@@ -49,24 +52,14 @@ namespace Discretas {
 
         void InitializeComponent(void)
         {
-            this->SuspendLayout();
-            // 
-            // MyForm
-            // 
-            this->ClientSize = System::Drawing::Size(734, 411);
-            this->Name = L"MyForm";
+            this->components = gcnew System::ComponentModel::Container();
+            this->Size = System::Drawing::Size(750, 450);
             this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
-            this->Text = L"Mapa de Karnaugh con 2 variables";
-            this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
-            this->ResumeLayout(false);
-
         }
 
         void ConfigurarInterfaz()
         {
-            // ==========================================
-            // 1. PANEL: TABLA DE VERDAD
-            // ==========================================
+            // TABLA DE VERDAD
             grpTabla = gcnew GroupBox();
             grpTabla->Text = "Tabla de verdad";
             grpTabla->Location = Point(30, 30);
@@ -88,31 +81,21 @@ namespace Discretas {
             for (int i = 0; i < 4; i++) {
                 int yPos = 80 + (i * 40);
 
-                lblX[i] = gcnew Label();
-                lblX[i]->Text = valX[i];
-                lblX[i]->Location = Point(50, yPos);
-                lblX[i]->AutoSize = true;
+                lblX[i] = gcnew Label(); lblX[i]->Text = valX[i]; lblX[i]->Location = Point(50, yPos); lblX[i]->AutoSize = true;
                 grpTabla->Controls->Add(lblX[i]);
 
-                lblY[i] = gcnew Label();
-                lblY[i]->Text = valY[i];
-                lblY[i]->Location = Point(120, yPos);
-                lblY[i]->AutoSize = true;
+                lblY[i] = gcnew Label(); lblY[i]->Text = valY[i]; lblY[i]->Location = Point(120, yPos); lblY[i]->AutoSize = true;
                 grpTabla->Controls->Add(lblY[i]);
 
                 cmbF[i] = gcnew ComboBox();
-                cmbF[i]->Items->Add("0");
-                cmbF[i]->Items->Add("1");
+                cmbF[i]->Items->Add("0"); cmbF[i]->Items->Add("1");
                 cmbF[i]->DropDownStyle = ComboBoxStyle::DropDownList;
                 cmbF[i]->SelectedIndex = 0;
-                cmbF[i]->Location = Point(175, yPos - 3);
-                cmbF[i]->Size = System::Drawing::Size(50, 20);
+                cmbF[i]->Location = Point(175, yPos - 3); cmbF[i]->Size = System::Drawing::Size(50, 20);
                 grpTabla->Controls->Add(cmbF[i]);
             }
 
-            // ==========================================
-            // 2. PANEL: MAPA DE KARNAUGH
-            // ==========================================
+            // MAPA DE KARNAUGH
             grpMapa = gcnew GroupBox();
             grpMapa->Text = "Mapa de Karnaugh";
             grpMapa->Location = Point(340, 30);
@@ -127,10 +110,8 @@ namespace Discretas {
             Label^ lblHeadXPos = gcnew Label(); lblHeadXPos->Text = "x";  lblHeadXPos->Location = Point(50, 140); lblHeadXPos->AutoSize = true;
             grpMapa->Controls->Add(lblHeadXNeg); grpMapa->Controls->Add(lblHeadXPos);
 
-            txtM00 = CrearCeldaMapa(90, 85);
-            txtM01 = CrearCeldaMapa(150, 85);
-            txtM10 = CrearCeldaMapa(90, 135);
-            txtM11 = CrearCeldaMapa(150, 135);
+            txtM00 = CrearCeldaMapa(90, 85); txtM01 = CrearCeldaMapa(150, 85);
+            txtM10 = CrearCeldaMapa(90, 135); txtM11 = CrearCeldaMapa(150, 135);
 
             grpMapa->Controls->Add(txtM00); grpMapa->Controls->Add(txtM01);
             grpMapa->Controls->Add(txtM10); grpMapa->Controls->Add(txtM11);
@@ -142,13 +123,12 @@ namespace Discretas {
             btnCalcular->Click += gcnew EventHandler(this, &MyForm::btnCalcular_Click);
             grpMapa->Controls->Add(btnCalcular);
 
-            // ==========================================
-            // 3. BOTÓN VOLVER
-            // ==========================================
+            // BOTÓN VOLVER
             btnVolver = gcnew Button();
             btnVolver->Text = "Volver";
             btnVolver->Location = Point(600, 350);
             btnVolver->Size = System::Drawing::Size(90, 30);
+            btnVolver->Click += gcnew EventHandler(this, &MyForm::btnVolver_Click);
             this->Controls->Add(btnVolver);
         }
 
@@ -164,7 +144,6 @@ namespace Discretas {
 
         void btnCalcular_Click(Object^ sender, EventArgs^ e)
         {
-           
             KarnaughMap* mapa = new KarnaughMap();
 
             int f00 = System::Convert::ToInt32(cmbF[0]->SelectedItem);
@@ -182,10 +161,12 @@ namespace Discretas {
             txtM10->Text = mapa->obtenerValorCelda(1, 0).ToString();
             txtM11->Text = mapa->obtenerValorCelda(1, 1).ToString();
 
-           
             delete mapa;
         }
-    private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
-    }
-};
+
+        void btnVolver_Click(Object^ sender, EventArgs^ e)
+        {
+            this->Close(); // Regresa al menú
+        }
+    };
 }

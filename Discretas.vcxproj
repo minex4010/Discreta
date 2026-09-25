@@ -129,6 +129,9 @@
     <ClInclude Include="Agrupamiento.h" />
     <ClInclude Include="Celda.h" />
     <ClInclude Include="Expresion.h" />
+    <ClInclude Include="Inicio.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="KarnaughMap.h" />
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
@@ -144,6 +147,7 @@
     <ClCompile Include="Celda.cpp" />
     <ClCompile Include="Discretas.cpp" />
     <ClCompile Include="Expresion.cpp" />
+    <ClCompile Include="Inicio.cpp" />
     <ClCompile Include="KarnaughMap.cpp" />
     <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="pch.cpp">
@@ -166,6 +170,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Inicio.resx">
+      <DependentUpon>Inicio.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MyForm.resx">
       <DependentUpon>MyForm.h</DependentUpon>
     </EmbeddedResource>

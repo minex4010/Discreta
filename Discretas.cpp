@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "MyForm.h"
+#include "Inicio.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -9,8 +9,10 @@ int main(array<System::String^>^ args)
 {
     Application::EnableVisualStyles();
     Application::SetCompatibleTextRenderingDefault(false);
-    Discretas::MyForm form;
-    Application::Run(% form);
+
+    // Arrancamos el programa desde el menú de inicio
+    Discretas::Inicio formInicio;
+    Application::Run(% formInicio);
 
     return 0;
 }
