@@ -55,6 +55,10 @@ namespace Discretas {
             this->components = gcnew System::ComponentModel::Container();
             this->Size = System::Drawing::Size(750, 450);
             this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
+            this->BackColor = Color::FromArgb(255, 240, 245);
+            this->Font = gcnew System::Drawing::Font("Segoe UI", 10);
+            this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
+            this->MaximizeBox = false;
         }
 
         void ConfigurarInterfaz()
@@ -64,6 +68,8 @@ namespace Discretas {
             grpTabla->Text = "Tabla de verdad";
             grpTabla->Location = Point(30, 30);
             grpTabla->Size = System::Drawing::Size(280, 280);
+            grpTabla->ForeColor = Color::FromArgb(150, 60, 100);
+            grpTabla->Font = gcnew System::Drawing::Font("Segoe UI", 10, FontStyle::Bold);
             this->Controls->Add(grpTabla);
 
             Label^ lblHeadX = gcnew Label(); lblHeadX->Text = "x"; lblHeadX->Location = Point(50, 40); lblHeadX->AutoSize = true;
@@ -100,6 +106,8 @@ namespace Discretas {
             grpMapa->Text = "Mapa de Karnaugh";
             grpMapa->Location = Point(340, 30);
             grpMapa->Size = System::Drawing::Size(350, 280);
+            grpMapa->ForeColor = Color::FromArgb(150, 60, 100);
+            grpMapa->Font = gcnew System::Drawing::Font("Segoe UI", 10, FontStyle::Bold);
             this->Controls->Add(grpMapa);
 
             Label^ lblHeadYNeg = gcnew Label(); lblHeadYNeg->Text = "y'"; lblHeadYNeg->Location = Point(100, 50); lblHeadYNeg->AutoSize = true;
@@ -116,18 +124,33 @@ namespace Discretas {
             grpMapa->Controls->Add(txtM00); grpMapa->Controls->Add(txtM01);
             grpMapa->Controls->Add(txtM10); grpMapa->Controls->Add(txtM11);
 
+            // BOTÓN CALCULAR
             btnCalcular = gcnew Button();
             btnCalcular->Text = "Calcular";
             btnCalcular->Location = Point(230, 100);
             btnCalcular->Size = System::Drawing::Size(90, 40);
+            //MODIFICADO POR XIO 
+            btnCalcular->BackColor = Color::FromArgb(219, 112, 147);
+            btnCalcular->ForeColor = Color::White;
+            btnCalcular->FlatStyle = FlatStyle::Flat;
+            btnCalcular->Font = gcnew System::Drawing::Font("Segoe UI", 9, FontStyle::Bold);
+            btnCalcular->Cursor = Cursors::Hand;
+
             btnCalcular->Click += gcnew EventHandler(this, &MyForm::btnCalcular_Click);
             grpMapa->Controls->Add(btnCalcular);
 
-            // BOTÓN VOLVER
+            // BOTÓN VOLVER MICHAEL
             btnVolver = gcnew Button();
             btnVolver->Text = "Volver";
             btnVolver->Location = Point(600, 350);
-            btnVolver->Size = System::Drawing::Size(90, 30);
+            btnVolver->Size = System::Drawing::Size(90, 35);
+            //XIO
+            btnVolver->BackColor = Color::FromArgb(240, 180, 200);
+            btnVolver->ForeColor = Color::FromArgb(100, 40, 60);
+            btnVolver->FlatStyle = FlatStyle::Flat;
+            btnVolver->Font = gcnew System::Drawing::Font("Segoe UI", 9, FontStyle::Bold);
+            btnVolver->Cursor = Cursors::Hand;
+
             btnVolver->Click += gcnew EventHandler(this, &MyForm::btnVolver_Click);
             this->Controls->Add(btnVolver);
         }
@@ -139,6 +162,14 @@ namespace Discretas {
             txt->Size = System::Drawing::Size(40, 25);
             txt->ReadOnly = true;
             txt->TextAlign = HorizontalAlignment::Center;
+            //XIO
+            txt->BackColor = Color::White;
+            txt->ForeColor = Color::FromArgb(150, 60, 100);
+            txt->Font = gcnew System::Drawing::Font(
+                "Segoe UI",
+                10,
+                FontStyle::Bold);
+
             return txt;
         }
 
