@@ -38,23 +38,24 @@ namespace Discretas {
 
         void InitializeComponent(void)
         {
-            this->components = gcnew System::ComponentModel::Container();
-            this->Size = System::Drawing::Size(400, 300);
-            this->Text = L"Menú Principal - Discretas";
+            this->SuspendLayout();
+            // 
+            // Inicio
+            // 
+            this->ClientSize = System::Drawing::Size(446, 349);
+            this->Name = L"Inicio";
             this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
+            this->Text = L"Menú Principal - Discretas";
+            this->ResumeLayout(false);
+
         }
 
         void ConfigurarInterfaz()
         {
-            // Imagen de fondo
-            try {
-                this->BackgroundImage = Image::FromFile("watermarked_img_6033019567896508837.jpg");
-                this->BackgroundImageLayout = ImageLayout::Stretch;
-            }
-            catch (...) {
-                this->BackColor = SystemColors::ControlDark;
-            }
+            //Fondo rosado
+            this->BackColor = Color::Pink;
 
+            
             lblTitulo = gcnew Label();
             lblTitulo->Text = "Selecciona el número de variables:";
             lblTitulo->Location = Point(90, 50);
@@ -88,7 +89,7 @@ namespace Discretas {
             int numVariables = comboBox1->SelectedIndex + 2;
             MyForm^ ventanaMapa = gcnew MyForm(numVariables);
 
-            this->Hide();
+            this->Hide(); //PARA MOSTR
             ventanaMapa->ShowDialog();
             this->Show();
         }
