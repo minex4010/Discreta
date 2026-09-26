@@ -42,6 +42,17 @@ namespace Discretas {
             // 
             // Inicio
             // 
+            this->ClientSize = System::Drawing::Size(384, 261);
+            this->Name = L"Inicio";
+            this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
+            this->Text = L"Menú Principal - Discretas";
+            this->Load += gcnew System::EventHandler(this, &Inicio::Inicio_Load);
+            this->ResumeLayout(false);
+
+            this->SuspendLayout();
+            // 
+            // Inicio
+            // 
             this->ClientSize = System::Drawing::Size(446, 349);
             this->Name = L"Inicio";
             this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
@@ -93,5 +104,7 @@ namespace Discretas {
             ventanaMapa->ShowDialog();
             this->Show();
         }
+    private: System::Void Inicio_Load(System::Object^ sender, System::EventArgs^ e) {
+    }
     };
 }
