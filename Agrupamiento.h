@@ -1,12 +1,15 @@
 #pragma once
 #include "Celda.h"
 #include <vector>
+#include <string>
+using namespace std;
 
 class Agrupamiento
 {
 private:
-    std::vector<Celda> celdasAgrupadas;
+    vector<Celda> celdasAgrupadas;
 public:
-    Agrupamiento() {}
-    void agregarCelda(Celda c) { celdasAgrupadas.push_back(c); }
+    Agrupamiento();
+    void agregarCelda(Celda c);
+    string obtenerTermino(int numVariables); 
 };
