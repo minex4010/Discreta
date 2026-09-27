@@ -1,5 +1,5 @@
 #pragma once
-#include "MyForm.h" // Conecta con el formulario del mapa
+#include "MyForm.h" 
 
 namespace Discretas {
 
