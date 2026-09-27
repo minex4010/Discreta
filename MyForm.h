@@ -1,5 +1,5 @@
 #pragma once
-#include "KarnaughMap.h" 
+#include "KarnaughMap.h"
 #include <string>
 
 namespace Discretas {
@@ -15,42 +15,37 @@ namespace Discretas {
     {
     private:
         int variablesSeleccionadas;
-        int numCombinaciones; 
+        int numCombinaciones;
 
-        GroupBox^ grpTabla;
+        Panel^ pnlTabla;
         cli::array<Label^>^ lblX;
         cli::array<Label^>^ lblY;
         cli::array<Label^>^ lblZ;
+        cli::array<Label^>^ lblW;
         cli::array<ComboBox^>^ cmbF;
 
-        GroupBox^ grpMapa;
-        cli::array<TextBox^>^ txtMapa; 
+        Panel^ pnlMapa;
+        cli::array<TextBox^>^ txtMapa;
 
         Button^ btnCalcular;
         Button^ btnVolver;
+        Label^ lblTituloFuncion;
         Label^ lblEcuacion;
 
     public:
-    
         MyForm(int numVars)
         {
             variablesSeleccionadas = numVars;
-            numCombinaciones = (variablesSeleccionadas == 2) ? 4 : 8;
+            numCombinaciones = (variablesSeleccionadas == 2) ? 4 : (variablesSeleccionadas == 3 ? 8 : 16);
 
             InitializeComponent();
-            ConfigurarInterfaz(); 
+            ConfigurarInterfaz();
 
             this->Text = "Mapa de Karnaugh con " + variablesSeleccionadas + " variables";
         }
 
     protected:
-        ~MyForm()
-        {
-            if (components)
-            {
-                delete components;
-            }
-        }
+        ~MyForm() { if (components) delete components; }
 
     private:
         System::ComponentModel::Container^ components;
@@ -58,13 +53,10 @@ namespace Discretas {
         void InitializeComponent(void)
         {
             this->components = gcnew System::ComponentModel::Container();
-   
-            int anchoVentana = (variablesSeleccionadas == 2) ? 750 : 850;
-            int altoVentana = (variablesSeleccionadas == 2) ? 450 : 550;
 
-            this->Size = System::Drawing::Size(anchoVentana, altoVentana);
+            this->Size = System::Drawing::Size(950, 600);
             this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
-            this->BackColor = Color::FromArgb(255, 240, 245); // Fondo Rosado
+            this->BackColor = Color::DarkGray; 
             this->Font = gcnew System::Drawing::Font("Segoe UI", 10);
             this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
             this->MaximizeBox = false;
@@ -72,189 +64,207 @@ namespace Discretas {
 
         void ConfigurarInterfaz()
         {
-         
-            grpTabla = gcnew GroupBox();
-            grpTabla->Text = "Tabla de verdad";
-            grpTabla->Location = Point(20, 20);
-            grpTabla->Size = System::Drawing::Size((variablesSeleccionadas == 2 ? 280 : 320), (variablesSeleccionadas == 2 ? 280 : 420));
-            grpTabla->ForeColor = Color::FromArgb(150, 60, 100);
-            grpTabla->Font = gcnew System::Drawing::Font("Segoe UI", 10, FontStyle::Bold);
-            this->Controls->Add(grpTabla);
+      
+            pnlTabla = gcnew Panel();
+            pnlTabla->BackColor = Color::LightSkyBlue; 
+            pnlTabla->Location = Point(20, 20);
+            pnlTabla->Size = System::Drawing::Size((variablesSeleccionadas == 4 ? 260 : 200), 520);
+            this->Controls->Add(pnlTabla);
 
-            Label^ lblHeadX = gcnew Label(); lblHeadX->Text = "x"; lblHeadX->Location = Point(50, 40); lblHeadX->AutoSize = true;
-            Label^ lblHeadY = gcnew Label(); lblHeadY->Text = "y"; lblHeadY->Location = Point(110, 40); lblHeadY->AutoSize = true;
-            grpTabla->Controls->Add(lblHeadX); grpTabla->Controls->Add(lblHeadY);
+            Label^ lblTituloTabla = gcnew Label();
+            lblTituloTabla->Text = "Tabla de verdad";
+            lblTituloTabla->Font = gcnew System::Drawing::Font("Segoe UI", 12, FontStyle::Bold);
+            lblTituloTabla->Location = Point(20, 10);
+            lblTituloTabla->AutoSize = true;
+            pnlTabla->Controls->Add(lblTituloTabla);
 
-            int posF = 170;
-            if (variablesSeleccionadas == 3) {
-                Label^ lblHeadZ = gcnew Label(); lblHeadZ->Text = "z"; lblHeadZ->Location = Point(170, 40); lblHeadZ->AutoSize = true;
-                grpTabla->Controls->Add(lblHeadZ);
-                posF = 230; 
-            }
+            int cX = 30, cY = 70, cZ = 110, cW = 150, cF = 190;
+            if (variablesSeleccionadas == 2) { cF = 110; }
+            else if (variablesSeleccionadas == 3) { cF = 150; }
 
-            // Cabecera F
-            Label^ lblHeadF = gcnew Label(); lblHeadF->Text = "f"; lblHeadF->Location = Point(posF + 15, 40); lblHeadF->AutoSize = true;
-            grpTabla->Controls->Add(lblHeadF);
+            Label^ headX = gcnew Label(); headX->Text = "x"; headX->Location = Point(cX, 45); headX->AutoSize = true; pnlTabla->Controls->Add(headX);
+            Label^ headY = gcnew Label(); headY->Text = "y"; headY->Location = Point(cY, 45); headY->AutoSize = true; pnlTabla->Controls->Add(headY);
+            if (variablesSeleccionadas >= 3) { Label^ headZ = gcnew Label(); headZ->Text = "z"; headZ->Location = Point(cZ, 45); headZ->AutoSize = true; pnlTabla->Controls->Add(headZ); }
+            if (variablesSeleccionadas == 4) { Label^ headW = gcnew Label(); headW->Text = "w"; headW->Location = Point(cW, 45); headW->AutoSize = true; pnlTabla->Controls->Add(headW); }
+            Label^ headF = gcnew Label(); headF->Text = "f"; headF->Location = Point(cF + 10, 45); headF->AutoSize = true; pnlTabla->Controls->Add(headF);
 
             lblX = gcnew cli::array<Label^>(numCombinaciones);
             lblY = gcnew cli::array<Label^>(numCombinaciones);
-            if (variablesSeleccionadas == 3) lblZ = gcnew cli::array<Label^>(numCombinaciones);
+            if (variablesSeleccionadas >= 3) lblZ = gcnew cli::array<Label^>(numCombinaciones);
+            if (variablesSeleccionadas == 4) lblW = gcnew cli::array<Label^>(numCombinaciones);
             cmbF = gcnew cli::array<ComboBox^>(numCombinaciones);
 
-            cli::array<String^>^ valX2 = { "0", "0", "1", "1" };
-            cli::array<String^>^ valY2 = { "0", "1", "0", "1" };
-
-            cli::array<String^>^ valX3 = { "0", "0", "0", "0", "1", "1", "1", "1" };
-            cli::array<String^>^ valY3 = { "0", "0", "1", "1", "0", "0", "1", "1" };
-            cli::array<String^>^ valZ3 = { "0", "1", "0", "1", "0", "1", "0", "1" };
+            int startY = 75;
+            int stepY = (variablesSeleccionadas == 4) ? 26 : 35; 
 
             for (int i = 0; i < numCombinaciones; i++) {
-                int yPos = 80 + (i * 35);
+                int rowY = startY + (i * stepY);
+ 
+                int bitX = (i >> (variablesSeleccionadas - 1)) & 1;
+                int bitY = (i >> (variablesSeleccionadas - 2)) & 1;
 
-                lblX[i] = gcnew Label(); lblX[i]->Text = (variablesSeleccionadas == 2) ? valX2[i] : valX3[i];
-                lblX[i]->Location = Point(50, yPos); lblX[i]->AutoSize = true;
-                grpTabla->Controls->Add(lblX[i]);
+                lblX[i] = gcnew Label(); lblX[i]->Text = bitX.ToString(); lblX[i]->Location = Point(cX, rowY); lblX[i]->AutoSize = true; pnlTabla->Controls->Add(lblX[i]);
+                lblY[i] = gcnew Label(); lblY[i]->Text = bitY.ToString(); lblY[i]->Location = Point(cY, rowY); lblY[i]->AutoSize = true; pnlTabla->Controls->Add(lblY[i]);
 
-                lblY[i] = gcnew Label(); lblY[i]->Text = (variablesSeleccionadas == 2) ? valY2[i] : valY3[i];
-                lblY[i]->Location = Point(110, yPos); lblY[i]->AutoSize = true;
-                grpTabla->Controls->Add(lblY[i]);
-
-                if (variablesSeleccionadas == 3) {
-                    lblZ[i] = gcnew Label(); lblZ[i]->Text = valZ3[i];
-                    lblZ[i]->Location = Point(170, yPos); lblZ[i]->AutoSize = true;
-                    grpTabla->Controls->Add(lblZ[i]);
+                if (variablesSeleccionadas >= 3) {
+                    int bitZ = (i >> (variablesSeleccionadas - 3)) & 1;
+                    lblZ[i] = gcnew Label(); lblZ[i]->Text = bitZ.ToString(); lblZ[i]->Location = Point(cZ, rowY); lblZ[i]->AutoSize = true; pnlTabla->Controls->Add(lblZ[i]);
+                }
+                if (variablesSeleccionadas == 4) {
+                    int bitW = i & 1;
+                    lblW[i] = gcnew Label(); lblW[i]->Text = bitW.ToString(); lblW[i]->Location = Point(cW, rowY); lblW[i]->AutoSize = true; pnlTabla->Controls->Add(lblW[i]);
                 }
 
                 cmbF[i] = gcnew ComboBox();
                 cmbF[i]->Items->Add("0"); cmbF[i]->Items->Add("1");
                 cmbF[i]->DropDownStyle = ComboBoxStyle::DropDownList;
                 cmbF[i]->SelectedIndex = 0;
-                cmbF[i]->Location = Point(posF, yPos - 3); cmbF[i]->Size = System::Drawing::Size(50, 20);
-                grpTabla->Controls->Add(cmbF[i]);
+                cmbF[i]->Size = System::Drawing::Size(45, 20);
+                cmbF[i]->Location = Point(cF, rowY - 3);
+                pnlTabla->Controls->Add(cmbF[i]);
             }
 
+            pnlMapa = gcnew Panel();
+            pnlMapa->BackColor = Color::LightPink; 
+            pnlMapa->Location = Point(320, 20);
+            pnlMapa->Size = System::Drawing::Size(580, 320);
+            this->Controls->Add(pnlMapa);
 
-            grpMapa = gcnew GroupBox();
-            grpMapa->Text = "Mapa de Karnaugh";
-            grpMapa->Location = Point((variablesSeleccionadas == 2 ? 340 : 380), 20);
-            grpMapa->Size = System::Drawing::Size((variablesSeleccionadas == 2 ? 350 : 420), 280);
-            grpMapa->ForeColor = Color::FromArgb(150, 60, 100);
-            grpMapa->Font = gcnew System::Drawing::Font("Segoe UI", 10, FontStyle::Bold);
-            this->Controls->Add(grpMapa);
-
-            Label^ lblHeadXNeg = gcnew Label(); lblHeadXNeg->Text = "x'"; lblHeadXNeg->Location = Point(40, 90); lblHeadXNeg->AutoSize = true;
-            Label^ lblHeadXPos = gcnew Label(); lblHeadXPos->Text = "x";  lblHeadXPos->Location = Point(40, 140); lblHeadXPos->AutoSize = true;
-            grpMapa->Controls->Add(lblHeadXNeg); grpMapa->Controls->Add(lblHeadXPos);
-
+            int numFilasMapa = (variablesSeleccionadas == 4) ? 4 : 2;
             int numColumnasMapa = (variablesSeleccionadas == 2) ? 2 : 4;
             txtMapa = gcnew cli::array<TextBox^>(numCombinaciones);
 
-            cli::array<String^>^ head2 = { "y'", "y" };
-            cli::array<String^>^ head3 = { "y'z'", "y'z", "yz", "yz'" }; // Código Gray
+            int startXMapa = 100, startYMapa = 80;
 
-            for (int col = 0; col < numColumnasMapa; col++) {
-                Label^ lblCol = gcnew Label();
-                lblCol->Text = (variablesSeleccionadas == 2) ? head2[col] : head3[col];
-                lblCol->Location = Point(90 + (col * 60), 50);
-                lblCol->AutoSize = true;
-                grpMapa->Controls->Add(lblCol);
-
-                txtMapa[col] = CrearCeldaMapa(85 + (col * 60), 85);
-                grpMapa->Controls->Add(txtMapa[col]);
-
-                txtMapa[col + numColumnasMapa] = CrearCeldaMapa(85 + (col * 60), 135);
-                grpMapa->Controls->Add(txtMapa[col + numColumnasMapa]);
+            for (int r = 0; r < numFilasMapa; r++) {
+                for (int c = 0; c < numColumnasMapa; c++) {
+                    int index = r * numColumnasMapa + c;
+                    txtMapa[index] = gcnew TextBox();
+                    txtMapa[index]->Location = Point(startXMapa + (c * 60), startYMapa + (r * 40));
+                    txtMapa[index]->Size = System::Drawing::Size(45, 25);
+                    txtMapa[index]->ReadOnly = true;
+                    txtMapa[index]->TextAlign = HorizontalAlignment::Center;
+                    pnlMapa->Controls->Add(txtMapa[index]);
+                }
             }
 
+            cli::array<String^>^ leftLabels = (variablesSeleccionadas == 4) ? gcnew cli::array<String^>{ "x'", "x'", "x", "x" } : gcnew cli::array<String^>{ "x'", "x" };
+            for (int r = 0; r < numFilasMapa; r++) {
+                Label^ lbl = gcnew Label(); lbl->Text = leftLabels[r];
+                lbl->Location = Point(startXMapa - 35, startYMapa + (r * 40) + 5);
+                lbl->AutoSize = true; pnlMapa->Controls->Add(lbl);
+            }
+
+            cli::array<String^>^ rightLabels = (variablesSeleccionadas == 4) ? gcnew cli::array<String^>{ "y'", "y", "y", "y'" } : gcnew cli::array<String^>{ "y'", "y" };
+            for (int r = 0; r < numFilasMapa; r++) {
+                Label^ lbl = gcnew Label(); lbl->Text = rightLabels[r];
+                lbl->Location = Point(startXMapa + (numColumnasMapa * 60) + 10, startYMapa + (r * 40) + 5);
+                lbl->AutoSize = true; pnlMapa->Controls->Add(lbl);
+            }
+
+            cli::array<String^>^ topLabels;
+            if (variablesSeleccionadas == 4) topLabels = gcnew cli::array<String^>{ "z'", "z'", "z", "z" };
+            else if (variablesSeleccionadas == 3) topLabels = gcnew cli::array<String^>{ "y'", "y'", "y", "y" };
+            else topLabels = gcnew cli::array<String^>{ "y'", "y" };
+
+            for (int c = 0; c < numColumnasMapa; c++) {
+                Label^ lbl = gcnew Label(); lbl->Text = topLabels[c];
+                lbl->Location = Point(startXMapa + (c * 60) + 15, startYMapa - 25);
+                lbl->AutoSize = true; pnlMapa->Controls->Add(lbl);
+            }
+
+            if (variablesSeleccionadas >= 3) {
+                cli::array<String^>^ botLabels = (variablesSeleccionadas == 4) ? gcnew cli::array<String^>{ "w'", "w", "w", "w'" } : gcnew cli::array<String^>{ "z'", "z", "z", "z'" };
+                for (int c = 0; c < numColumnasMapa; c++) {
+                    Label^ lbl = gcnew Label(); lbl->Text = botLabels[c];
+                    lbl->Location = Point(startXMapa + (c * 60) + 15, startYMapa + (numFilasMapa * 40) + 10);
+                    lbl->AutoSize = true; pnlMapa->Controls->Add(lbl);
+                }
+            }
 
             btnCalcular = gcnew Button();
             btnCalcular->Text = "Calcular";
-            btnCalcular->Location = Point((variablesSeleccionadas == 2 ? 230 : 300), 200);
-            btnCalcular->Size = System::Drawing::Size(90, 40);
-            btnCalcular->BackColor = Color::FromArgb(219, 112, 147);
-            btnCalcular->ForeColor = Color::White;
+            btnCalcular->Location = Point(420, 120);
+            btnCalcular->Size = System::Drawing::Size(110, 45);
+            btnCalcular->BackColor = Color::Violet;
             btnCalcular->FlatStyle = FlatStyle::Flat;
-            btnCalcular->Font = gcnew System::Drawing::Font("Segoe UI", 9, FontStyle::Bold);
+            btnCalcular->FlatAppearance->BorderColor = Color::Blue;
+            btnCalcular->FlatAppearance->BorderSize = 2;
+            btnCalcular->Font = gcnew System::Drawing::Font("Segoe UI", 11, FontStyle::Bold);
             btnCalcular->Cursor = Cursors::Hand;
             btnCalcular->Click += gcnew EventHandler(this, &MyForm::btnCalcular_Click);
-            grpMapa->Controls->Add(btnCalcular);
+            pnlMapa->Controls->Add(btnCalcular);
+
+            lblTituloFuncion = gcnew Label();
+            lblTituloFuncion->Text = "Funcion booleana:";
+            lblTituloFuncion->Location = Point(320, 380);
+            lblTituloFuncion->AutoSize = true;
+            lblTituloFuncion->Font = gcnew System::Drawing::Font("Segoe UI", 12, FontStyle::Bold);
+            this->Controls->Add(lblTituloFuncion);
 
             lblEcuacion = gcnew Label();
-            lblEcuacion->Text = "F = ";
-            lblEcuacion->Location = Point((variablesSeleccionadas == 2 ? 340 : 380), 330);
+            lblEcuacion->Text = "";
+            lblEcuacion->Location = Point(320, 430);
             lblEcuacion->AutoSize = true;
-            lblEcuacion->ForeColor = Color::FromArgb(150, 60, 100);
-            lblEcuacion->Font = gcnew System::Drawing::Font("Segoe UI", 12, FontStyle::Bold);
+            lblEcuacion->Font = gcnew System::Drawing::Font("Segoe UI", 14);
+            lblEcuacion->ForeColor = Color::Black;
             this->Controls->Add(lblEcuacion);
 
             btnVolver = gcnew Button();
-            btnVolver->Text = "Volver";
-            btnVolver->Location = Point((variablesSeleccionadas == 2 ? 600 : 700), (variablesSeleccionadas == 2 ? 350 : 450));
-            btnVolver->Size = System::Drawing::Size(90, 35);
-            btnVolver->BackColor = Color::FromArgb(240, 180, 200);
-            btnVolver->ForeColor = Color::FromArgb(100, 40, 60);
-            btnVolver->FlatStyle = FlatStyle::Flat;
-            btnVolver->Font = gcnew System::Drawing::Font("Segoe UI", 9, FontStyle::Bold);
-            btnVolver->Cursor = Cursors::Hand;
+            btnVolver->Text = "Volver al Menú";
+            btnVolver->Location = Point(760, 480);
+            btnVolver->Size = System::Drawing::Size(140, 40);
             btnVolver->Click += gcnew EventHandler(this, &MyForm::btnVolver_Click);
             this->Controls->Add(btnVolver);
-        }
-
-        TextBox^ CrearCeldaMapa(int posX, int posY)
-        {
-            TextBox^ txt = gcnew TextBox();
-            txt->Location = Point(posX, posY);
-            txt->Size = System::Drawing::Size(40, 25);
-            txt->ReadOnly = true;
-            txt->TextAlign = HorizontalAlignment::Center;
-            txt->BackColor = Color::White;
-            txt->ForeColor = Color::FromArgb(150, 60, 100);
-            txt->Font = gcnew System::Drawing::Font("Segoe UI", 10, FontStyle::Bold);
-
-            return txt;
         }
 
         void btnCalcular_Click(Object^ sender, EventArgs^ e)
         {
             KarnaughMap* mapa = new KarnaughMap(variablesSeleccionadas);
 
+            cli::array<int>^ v = gcnew cli::array<int>(16);
+            for (int i = 0; i < numCombinaciones; i++) {
+                v[i] = (cmbF[i]->Text == "1") ? 1 : 0;
+            }
+
             if (variablesSeleccionadas == 2) {
-                int f00 = System::Convert::ToInt32(cmbF[0]->SelectedItem);
-                int f01 = System::Convert::ToInt32(cmbF[1]->SelectedItem);
-                int f10 = System::Convert::ToInt32(cmbF[2]->SelectedItem);
-                int f11 = System::Convert::ToInt32(cmbF[3]->SelectedItem);
-
-                mapa->configurarCelda(0, 0, f00); mapa->configurarCelda(0, 1, f01);
-                mapa->configurarCelda(1, 0, f10); mapa->configurarCelda(1, 1, f11);
-
-                txtMapa[0]->Text = mapa->obtenerValorCelda(0, 0).ToString();
-                txtMapa[1]->Text = mapa->obtenerValorCelda(0, 1).ToString();
-                txtMapa[2]->Text = mapa->obtenerValorCelda(1, 0).ToString();
-                txtMapa[3]->Text = mapa->obtenerValorCelda(1, 1).ToString();
+                mapa->configurarCelda(0, 0, v[0]); mapa->configurarCelda(0, 1, v[1]);
+                mapa->configurarCelda(1, 0, v[2]); mapa->configurarCelda(1, 1, v[3]);
             }
             else if (variablesSeleccionadas == 3) {
-                int v0 = System::Convert::ToInt32(cmbF[0]->SelectedItem); // x'y'z'
-                int v1 = System::Convert::ToInt32(cmbF[1]->SelectedItem); // x'y'z
-                int v2 = System::Convert::ToInt32(cmbF[2]->SelectedItem); // x'yz'
-                int v3 = System::Convert::ToInt32(cmbF[3]->SelectedItem); // x'yz
-                int v4 = System::Convert::ToInt32(cmbF[4]->SelectedItem); // xy'z'
-                int v5 = System::Convert::ToInt32(cmbF[5]->SelectedItem); // xy'z
-                int v6 = System::Convert::ToInt32(cmbF[6]->SelectedItem); // xyz'
-                int v7 = System::Convert::ToInt32(cmbF[7]->SelectedItem); // xyz
+                mapa->configurarCelda(0, 0, v[0]); mapa->configurarCelda(0, 1, v[1]);
+                mapa->configurarCelda(0, 3, v[2]); mapa->configurarCelda(0, 2, v[3]);
 
-                mapa->configurarCelda(0, 0, v0); mapa->configurarCelda(0, 1, v1);
-                mapa->configurarCelda(0, 3, v2); mapa->configurarCelda(0, 2, v3);
+                mapa->configurarCelda(1, 0, v[4]); mapa->configurarCelda(1, 1, v[5]);
+                mapa->configurarCelda(1, 3, v[6]); mapa->configurarCelda(1, 2, v[7]);
+            }
+            else if (variablesSeleccionadas == 4) {
+                // Fila x'y' (00)
+                mapa->configurarCelda(0, 0, v[0]); mapa->configurarCelda(0, 1, v[1]);
+                mapa->configurarCelda(0, 3, v[2]); mapa->configurarCelda(0, 2, v[3]);
+                // Fila x'y (01)
+                mapa->configurarCelda(1, 0, v[4]); mapa->configurarCelda(1, 1, v[5]);
+                mapa->configurarCelda(1, 3, v[6]); mapa->configurarCelda(1, 2, v[7]);
+                // Fila xy (11) -> Saltamos índices 12 al 15
+                mapa->configurarCelda(2, 0, v[12]); mapa->configurarCelda(2, 1, v[13]);
+                mapa->configurarCelda(2, 3, v[14]); mapa->configurarCelda(2, 2, v[15]);
+                // Fila xy' (10) -> Índices 8 al 11
+                mapa->configurarCelda(3, 0, v[8]); mapa->configurarCelda(3, 1, v[9]);
+                mapa->configurarCelda(3, 3, v[10]); mapa->configurarCelda(3, 2, v[11]);
+            }
 
-                mapa->configurarCelda(1, 0, v4); mapa->configurarCelda(1, 1, v5);
-                mapa->configurarCelda(1, 3, v6); mapa->configurarCelda(1, 2, v7);
-                txtMapa[0]->Text = v0.ToString(); txtMapa[1]->Text = v1.ToString();
-                txtMapa[2]->Text = v3.ToString(); txtMapa[3]->Text = v2.ToString();
-                txtMapa[4]->Text = v4.ToString(); txtMapa[5]->Text = v5.ToString();
-                txtMapa[6]->Text = v7.ToString(); txtMapa[7]->Text = v6.ToString();
+            int numFilasMapa = (variablesSeleccionadas == 4) ? 4 : 2;
+            int numColumnasMapa = (variablesSeleccionadas == 2) ? 2 : 4;
+
+            for (int r = 0; r < numFilasMapa; r++) {
+                for (int c = 0; c < numColumnasMapa; c++) {
+                    int index = r * numColumnasMapa + c;
+                    txtMapa[index]->Text = mapa->obtenerValorCelda(r, c).ToString();
+                }
             }
 
             std::string resultadoStr = mapa->resolverMapa();
-            lblEcuacion->Text = "F = " + gcnew String(resultadoStr.c_str());
+            lblEcuacion->Text = gcnew String(resultadoStr.c_str());
 
             delete mapa;
         }

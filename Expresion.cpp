@@ -15,7 +15,7 @@ string Expresion::obtenerEcuacionFinal() {
     string ecuacion = grupos[0].obtenerTermino(numVars);
 
     for (size_t i = 1; i < grupos.size(); ++i) {
-        ecuacion += " + " + grupos[i].obtenerTermino(numVars);
+        ecuacion += " V " + grupos[i].obtenerTermino(numVars);
     }
     return ecuacion;
 }
