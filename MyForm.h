@@ -53,10 +53,9 @@ namespace Discretas {
         void InitializeComponent(void)
         {
             this->components = gcnew System::ComponentModel::Container();
-
             this->Size = System::Drawing::Size(950, 600);
             this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
-            this->BackColor = Color::DarkGray; 
+            this->BackColor = Color::DarkGray;
             this->Font = gcnew System::Drawing::Font("Segoe UI", 10);
             this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
             this->MaximizeBox = false;
@@ -64,9 +63,9 @@ namespace Discretas {
 
         void ConfigurarInterfaz()
         {
-      
+ 
             pnlTabla = gcnew Panel();
-            pnlTabla->BackColor = Color::LightSkyBlue; 
+            pnlTabla->BackColor = Color::LightSkyBlue;
             pnlTabla->Location = Point(20, 20);
             pnlTabla->Size = System::Drawing::Size((variablesSeleccionadas == 4 ? 260 : 200), 520);
             this->Controls->Add(pnlTabla);
@@ -95,11 +94,10 @@ namespace Discretas {
             cmbF = gcnew cli::array<ComboBox^>(numCombinaciones);
 
             int startY = 75;
-            int stepY = (variablesSeleccionadas == 4) ? 26 : 35; 
+            int stepY = (variablesSeleccionadas == 4) ? 26 : 35;
 
             for (int i = 0; i < numCombinaciones; i++) {
                 int rowY = startY + (i * stepY);
- 
                 int bitX = (i >> (variablesSeleccionadas - 1)) & 1;
                 int bitY = (i >> (variablesSeleccionadas - 2)) & 1;
 
@@ -125,7 +123,7 @@ namespace Discretas {
             }
 
             pnlMapa = gcnew Panel();
-            pnlMapa->BackColor = Color::LightPink; 
+            pnlMapa->BackColor = Color::LightPink;
             pnlMapa->Location = Point(320, 20);
             pnlMapa->Size = System::Drawing::Size(580, 320);
             this->Controls->Add(pnlMapa);
@@ -136,6 +134,7 @@ namespace Discretas {
 
             int startXMapa = 100, startYMapa = 80;
 
+            // DIBUJAR CAJAS DEL MAPA
             for (int r = 0; r < numFilasMapa; r++) {
                 for (int c = 0; c < numColumnasMapa; c++) {
                     int index = r * numColumnasMapa + c;
@@ -148,6 +147,9 @@ namespace Discretas {
                 }
             }
 
+ 
+
+
             cli::array<String^>^ leftLabels = (variablesSeleccionadas == 4) ? gcnew cli::array<String^>{ "x'", "x'", "x", "x" } : gcnew cli::array<String^>{ "x'", "x" };
             for (int r = 0; r < numFilasMapa; r++) {
                 Label^ lbl = gcnew Label(); lbl->Text = leftLabels[r];
@@ -155,18 +157,13 @@ namespace Discretas {
                 lbl->AutoSize = true; pnlMapa->Controls->Add(lbl);
             }
 
-            cli::array<String^>^ rightLabels = (variablesSeleccionadas == 4) ? gcnew cli::array<String^>{ "y'", "y", "y", "y'" } : gcnew cli::array<String^>{ "y'", "y" };
-            for (int r = 0; r < numFilasMapa; r++) {
-                Label^ lbl = gcnew Label(); lbl->Text = rightLabels[r];
-                lbl->Location = Point(startXMapa + (numColumnasMapa * 60) + 10, startYMapa + (r * 40) + 5);
-                lbl->AutoSize = true; pnlMapa->Controls->Add(lbl);
-            }
-
             cli::array<String^>^ topLabels;
-            if (variablesSeleccionadas == 4) topLabels = gcnew cli::array<String^>{ "z'", "z'", "z", "z" };
-            else if (variablesSeleccionadas == 3) topLabels = gcnew cli::array<String^>{ "y'", "y'", "y", "y" };
-            else topLabels = gcnew cli::array<String^>{ "y'", "y" };
-
+            if (variablesSeleccionadas >= 3) {
+                topLabels = gcnew cli::array<String^>{ "y'", "y'", "y", "y" };
+            }
+            else {
+                topLabels = gcnew cli::array<String^>{ "y'", "y" };
+            }
             for (int c = 0; c < numColumnasMapa; c++) {
                 Label^ lbl = gcnew Label(); lbl->Text = topLabels[c];
                 lbl->Location = Point(startXMapa + (c * 60) + 15, startYMapa - 25);
@@ -174,10 +171,19 @@ namespace Discretas {
             }
 
             if (variablesSeleccionadas >= 3) {
-                cli::array<String^>^ botLabels = (variablesSeleccionadas == 4) ? gcnew cli::array<String^>{ "w'", "w", "w", "w'" } : gcnew cli::array<String^>{ "z'", "z", "z", "z'" };
+                cli::array<String^>^ botLabels = gcnew cli::array<String^>{ "z'", "z", "z", "z'" };
                 for (int c = 0; c < numColumnasMapa; c++) {
                     Label^ lbl = gcnew Label(); lbl->Text = botLabels[c];
                     lbl->Location = Point(startXMapa + (c * 60) + 15, startYMapa + (numFilasMapa * 40) + 10);
+                    lbl->AutoSize = true; pnlMapa->Controls->Add(lbl);
+                }
+            }
+
+            if (variablesSeleccionadas == 4) {
+                cli::array<String^>^ rightLabels = gcnew cli::array<String^>{ "w'", "w", "w", "w'" };
+                for (int r = 0; r < numFilasMapa; r++) {
+                    Label^ lbl = gcnew Label(); lbl->Text = rightLabels[r];
+                    lbl->Location = Point(startXMapa + (numColumnasMapa * 60) + 10, startYMapa + (r * 40) + 5);
                     lbl->AutoSize = true; pnlMapa->Controls->Add(lbl);
                 }
             }
@@ -239,16 +245,15 @@ namespace Discretas {
                 mapa->configurarCelda(1, 3, v[6]); mapa->configurarCelda(1, 2, v[7]);
             }
             else if (variablesSeleccionadas == 4) {
-                // Fila x'y' (00)
                 mapa->configurarCelda(0, 0, v[0]); mapa->configurarCelda(0, 1, v[1]);
                 mapa->configurarCelda(0, 3, v[2]); mapa->configurarCelda(0, 2, v[3]);
-                // Fila x'y (01)
+
                 mapa->configurarCelda(1, 0, v[4]); mapa->configurarCelda(1, 1, v[5]);
                 mapa->configurarCelda(1, 3, v[6]); mapa->configurarCelda(1, 2, v[7]);
-                // Fila xy (11) -> Saltamos índices 12 al 15
+
                 mapa->configurarCelda(2, 0, v[12]); mapa->configurarCelda(2, 1, v[13]);
                 mapa->configurarCelda(2, 3, v[14]); mapa->configurarCelda(2, 2, v[15]);
-                // Fila xy' (10) -> Índices 8 al 11
+
                 mapa->configurarCelda(3, 0, v[8]); mapa->configurarCelda(3, 1, v[9]);
                 mapa->configurarCelda(3, 3, v[10]); mapa->configurarCelda(3, 2, v[11]);
             }
